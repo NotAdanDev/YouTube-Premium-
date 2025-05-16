@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>You-Tube Browser</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: sans-serif;
+    }
+
+    #topbar {
+      background-color: #111;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      align-items: center;
+    }
+
+    #urlbar {
+      background-color: #222;
+      color: white;
+      border: none;
+      padding: 6px;
+      width: 90%;
+      display: none;
+    }
+
+    #iframebox {
+      width: 100%;
+      height: calc(100vh - 40px);
+      border: none;
+    }
+
+    #menu {
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="topbar">
+    <span id="menu">...</span>
+    <input type="text" id="urlbar" readonly>
+  </div>
+
+  <iframe id="iframebox" src="https://www.youtube.com/"></iframe>
+
+  <script>
+    const iframe = document.getElementById("iframebox");
+    const urlbar = document.getElementById("urlbar");
+    const menu = document.getElementById("menu");
+
+    // Show/hide URL bar
+    menu.onclick = () => {
+      urlbar.style.display = urlbar.style.display === "block" ? "none" : "block";
+    };
+
+    // Handle navigation within YouTube only
+    iframe.onload = () => {
+      const realURL = iframe.contentWindow.location.href;
+
+      // Simulate "you-tube.com" appearance
+      let fakeURL = realURL.replace("youtube.com", "you-tube.com").replace("www.", "");
+      urlbar.value = fakeURL;
+    };
+
+    // Block navigation to non-YouTube sites
+    setInterval(() => {
+      try {
+        let loc = iframe.contentWindow.location.href;
+        if (!loc.includes("youtube.com")) {
+          iframe.src = "https://www.youtube.com/";
+        } else {
+          let fakeURL = loc.replace("youtube.com", "you-tube.com").replace("www.", "");
+          urlbar.value = fakeURL;
+        }
+      } catch (e) {
+        // CORS might block this in some cases
+      }
+    }, 2000);
+  </script>
+
+</body>
+</html>
